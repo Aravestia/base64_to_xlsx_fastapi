@@ -1,11 +1,28 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, HTMLResponse
 import base64
 import io
 
 app = FastAPI()
 
-@app.post("/")
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    html_content = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Base64 to xlsx converter</title>
+    </head>
+    <body>
+        <h1>Base64 to xlsx converter</h1>
+        <p>This is an API that should be called. You should not directly access this page.</p>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)
+
+
+@app.post("/convert")
 async def convert_base64_to_xlsx(request: Request):
     data = await request.json()
     base64_str = data.get("base64")
